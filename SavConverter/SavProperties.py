@@ -1,5 +1,5 @@
 from .SavWriter import *
-print
+
 def assign_prototype(raw_property):
     property_type = raw_property["type"]
     property_mapping = {
@@ -23,7 +23,7 @@ def assign_prototype(raw_property):
         "SoftObjectProperty": SoftObjectProperty,
         "FileEndProperty": FileEndProperty
     }
-    
+
     if property_type in property_mapping:
         return property_mapping[property_type].from_json(raw_property) # Call the from_json method
     else:
@@ -76,7 +76,7 @@ class HeaderProperty:
 class NoneProperty:
     def __init__(self):
         self.type = "NoneProperty"
-    
+
     @classmethod
     def from_json(cls, json_dict):
         instance = cls.__new__(cls) # Create a new instance without calling the constructor
@@ -274,7 +274,7 @@ class ByteProperty:
         if self.subtype == "StructProperty":
             content_count = len(self.value)
             byte_array_content = bytearray()
-            
+
             if self.generic_type == "Guid":
                 for value in self.value:
                     byte_array_content += write_bytes(value)
@@ -287,7 +287,7 @@ class ByteProperty:
                     else:
                         value = assign_prototype(value)
                         byte_array_content += value.to_bytes()
-            
+
             content_size = (
                 4 + 4 + len(self.name) + 1
                 + 4 + len(self.subtype) + 1
@@ -296,7 +296,7 @@ class ByteProperty:
                 + len(ByteProperty.unknown)
                 + len(byte_array_content)
             )
-            
+
             result = (
                 write_string(self.name) + write_string(self.type) + write_uint32(content_size)
                 + ByteProperty.padding + write_string(self.subtype) + bytes([0x00])
@@ -430,6 +430,7 @@ class StructProperty:
 class ArrayProperty:
     padding = bytes([0x00, 0x00, 0x00, 0x00])
     unknown = bytes([0x00] * 17)
+    unknown_editor_str = bytes([0x01, 0xD4, 0x62, 0x5F, 0xD8, 0xFA, 0xB0, 0x77, 0x4F, 0x8B, 0x72, 0x3E, 0xD2, 0xC2, 0x2A, 0xE0, 0xF9])
     type = "ArrayProperty"
 
     def __init__(self, name, sav_reader):
@@ -439,7 +440,12 @@ class ArrayProperty:
         sav_reader.read_bytes(4)
         self.subtype = sav_reader.read_string()
         # print(self.subtype)
-        sav_reader.read_bytes(1)
+
+        print(sav_reader.peek_bytes(17))
+        if sav_reader.peek_bytes(17) == ArrayProperty.unknown_editor_str:
+            sav_reader.read_bytes(17)
+        else:
+            sav_reader.read_bytes(1)
 
         if self.subtype == "StructProperty":
             content_count = sav_reader.read_uint32()
@@ -535,7 +541,7 @@ class MulticastInlineDelegateProperty:
         sav_reader.read_bytes(len(MulticastInlineDelegateProperty.unknown))
         self.object_name = sav_reader.read_string()
         self.function_name = sav_reader.read_string()
-    
+
     @classmethod
     def from_json(cls, json_dict):
         instance = cls.__new__(cls) # Create a new instance without calling the constructor
@@ -685,7 +691,7 @@ class SetProperty:
                         byte_array_content += value.to_bytes()
             content_size = 4 + 4 + len(byte_array_content)
             return (write_string(self.name) + write_string(self.type) + write_uint32(content_size) +
-                SetProperty.padding + write_string(self.subtype) + bytes([0x00]) + SetProperty.padding + 
+                SetProperty.padding + write_string(self.subtype) + bytes([0x00]) + SetProperty.padding +
                 write_uint32(content_count) + byte_array_content)
         elif self.subtype == "NameProperty":
             content_count = len(self.value)
@@ -753,7 +759,7 @@ class FileEndProperty:
         instance = cls.__new__(cls) # Create a new instance without calling the constructor
         instance.__dict__.update(json_dict) # Update the instance attributes with the JSON dictionary
         return instance
-    
+
     bytes = NoneProperty.bytes + bytes([0x00, 0x00, 0x00, 0x00])
     type = "FileEndProperty"
 

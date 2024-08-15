@@ -16,11 +16,14 @@ class SavReader:
         self.offset += count
         return result
 
+    def peek_bytes(self, count):
+        return self.file_array_buffer[self.offset:self.offset + count]
+
     def read_int16(self):
         value = unpack('<h', self.file_array_buffer[self.offset:self.offset + 2])[0]
         self.offset += 2
         return value
-    
+
     def read_int32(self):
         value = unpack('<i', self.file_array_buffer[self.offset:self.offset + 4])[0]
         self.offset += 4
@@ -30,7 +33,7 @@ class SavReader:
         value = unpack('<I', self.file_array_buffer[self.offset:self.offset + 4])[0]
         self.offset += 4
         return value
-    
+
     def read_float32(self):
         value = unpack('<f', self.file_array_buffer[self.offset:self.offset + 4])[0]
         self.offset += 4
@@ -47,7 +50,7 @@ class SavReader:
         result = raw_bytes.decode('utf-8')
         self.offset += length
         return result
-    
+
     def read_string_special(self):
         length = self.read_int32()
         wide = False
@@ -93,7 +96,7 @@ class SavReader:
         # Read property type
         property_type = self.read_string()
         # print(f"Reading property: {property_name}, type: {property_type}")
-        
+
         if property_type == "HeaderProperty":
             return HeaderProperty(property_name, self)
         elif property_type == "BoolProperty":

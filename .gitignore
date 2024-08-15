@@ -1,0 +1,4 @@
+ExampleSavFiles/*.sav
+ExampleSavFiles/*.json
+
+__pycache__/
