@@ -5,7 +5,7 @@ from SavConverter import obj_to_json, print_json, get_object_by_path, insert_obj
 
 # The following lines are an example of the .sav to .json conversion process
 # Get .sav property classes
-properties = read_sav('ExampleSavFiles/CrabChampions_SaveSlot_without_AutoSave.sav')
+properties = read_sav('SavFiles/Examples/CrabChampions_SaveSlot_without_AutoSave.sav')
 
 # Convert properties to json
 output = sav_to_json(properties, string = True)
@@ -65,13 +65,12 @@ if autosave == None:
     path_to_insert = [{"type": "FileEndProperty"}]
 
     # Reading in previously extracted AutoSave object
-    autosave = load_json('ExampleSavFiles/CrabChampions_AutoSave.json')
+    autosave = load_json('SavFiles/Examples/CrabChampions_AutoSave.json')
 
     # insert AutoSave object before FileEndProperty object
     insert_object_by_path(data, path_to_insert, autosave, position='before')
     if get_object_by_path(data, path_to_autosave) != None:
         print("\nFound inserted AutoSave.")
-
 
 
 # The following lines show the process of converting the edited .json back to .sav

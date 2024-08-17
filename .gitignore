@@ -1,4 +1,4 @@
-ExampleSavFiles/*.sav
-ExampleSavFiles/*.json
+SavFiles/*.sav
+JsonFiles/*.json
 
 __pycache__/

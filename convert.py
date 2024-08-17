@@ -2,6 +2,7 @@
 Convert Operation Harsh Doorstop Waldo Mod UE4 .sav files to .json
 '''
 import json
+from datetime import datetime
 from SavConverter.SavReader import read_sav
 
 def get_player_data_array(gvas_properties: list) -> list:
@@ -25,6 +26,10 @@ def data_array_to_json(data_array: list) -> str:
                 if key == 'Datetime':
                     # fix weird timestamp
                     value = value.replace(',', '')
+                    # convert to datetime
+                    value = datetime.strptime(value, '%Y/%m/%d %H:%M:%S.%f')
+                    value = value.strftime('%Y-%m-%d %H:%M:%S.%f')
+
                 field_dict[key] = value
             player_entries.append(field_dict)
 
@@ -38,16 +43,16 @@ def data_array_to_json(data_array: list) -> str:
     return json.dumps(out_json, indent=2)
 
 if __name__ == '__main__':
-    FILE_NAME = 'WaldoData10'
-    SAVE_FILE = f'ExampleSavFiles/{FILE_NAME}.sav'
-    WRITE_FILE = f'ExampleSavFiles/{FILE_NAME}.json'
+    FILE_NAME = 'WaldoDataClient'
+    SAVE_FILE = f'SavFiles/{FILE_NAME}.sav'
+    WRITE_FILE = f'JsonFiles/{FILE_NAME}.json'
 
     # Read sav file
-    gvas_props = read_sav(SAVE_FILE)
+    gvas_props: list = read_sav(SAVE_FILE)
 
     # parse data into json
-    player_data = get_player_data_array(gvas_props)
-    json_str = data_array_to_json(player_data)
+    player_data: list = get_player_data_array(gvas_props)
+    json_str: str = data_array_to_json(player_data)
 
     # Write json string to file
     with open(WRITE_FILE, 'w', encoding='utf-8') as json_file:
