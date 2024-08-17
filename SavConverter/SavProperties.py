@@ -441,7 +441,6 @@ class ArrayProperty:
         self.subtype = sav_reader.read_string()
         # print(self.subtype)
 
-        print(sav_reader.peek_bytes(17))
         if sav_reader.peek_bytes(17) == ArrayProperty.unknown_editor_str:
             sav_reader.read_bytes(17)
         else:
