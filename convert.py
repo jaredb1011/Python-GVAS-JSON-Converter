@@ -9,7 +9,7 @@ from SavConverter.SavReader import read_sav
 def get_player_data_array(gvas_properties: list) -> list | None:
     "Get the PlayerData array from the parsed GVAS properties"
     for prop in gvas_properties:
-        if prop.type == 'ArrayProperty' and prop.name == 'PlayerData':
+        if (prop.type == 'ArrayProperty') and (prop.name == 'PlayerData'):
             return prop.value
     return None
 
@@ -19,11 +19,13 @@ def parse_fields_to_dict(fields: list) -> dict:
     for field in fields:
         key = field.split(":")[0]
         value = ":".join(field.split(":")[1:]).strip()
+
         if key == 'Datetime':
             # fix weird timestamp & convert to datetime
             value = value.replace(',', '')
             value = datetime.strptime(value, '%Y/%m/%d %H:%M:%S.%f')
             value = value.strftime('%Y-%m-%d %H:%M:%S.%f')
+
         elif key in ['Position', 'Rotation']:
             # convert to dict of x, y, z
             parts = value.replace(',', '').split(' ')
@@ -33,6 +35,7 @@ def parse_fields_to_dict(fields: list) -> dict:
                 coord = float(part.split(':')[1])
                 value_dict[axis] = coord
             value = value_dict
+
         # convert to native data types
         elif key in ['isADS', 'isCrouched', 'isProne', 'isSprinting']:
             if value.lower() == 'true':
@@ -45,6 +48,7 @@ def parse_fields_to_dict(fields: list) -> dict:
             value = float(value)
         elif key in ['K', 'D', 'A']:
             value = int(value)
+
         field_dict[key] = value
     return field_dict
 
@@ -68,13 +72,10 @@ def data_array_to_json(data_array: list) -> str:
     }
     return json.dumps(out_json, indent=2)
 
-if __name__ == '__main__':
-    FILE_NAME = 'WaldoDataClient'
-    SAVE_FILE = f'SavFiles/{FILE_NAME}.sav'
-    WRITE_FILE = f'JsonFiles/{FILE_NAME}.json'
-
+def convert_sav_to_json(sav_file_path: str, json_file_path: str) -> None:
+    "Convert the given .sav file to a .json file"
     # Read sav file
-    gvas_props: list = read_sav(SAVE_FILE)
+    gvas_props: list = read_sav(sav_file_path)
 
     # parse data into json
     player_data: list | None = get_player_data_array(gvas_props)
@@ -84,5 +85,12 @@ if __name__ == '__main__':
     json_str: str = data_array_to_json(player_data)
 
     # Write json string to file
-    with open(WRITE_FILE, 'w', encoding='utf-8') as json_file:
+    with open(json_file_path, 'w', encoding='utf-8') as json_file:
         json_file.write(json_str)
+
+if __name__ == '__main__':
+    FILE_NAME = 'WaldoDataClient'
+    SAVE_FILE = f'SavFiles/{FILE_NAME}.sav'
+    WRITE_FILE = f'JsonFiles/{FILE_NAME}.json'
+
+    convert_sav_to_json(SAVE_FILE, WRITE_FILE)
