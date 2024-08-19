@@ -6,6 +6,11 @@ import sys
 from datetime import datetime
 from SavConverter.SavReader import read_sav
 
+# TODO:
+# - Mod should only record data from the player who got the kill
+# - Mod should output relative coords instead of absolute
+# - Mod should minify field names
+
 def get_player_data_array(gvas_properties: list) -> list | None:
     "Get the PlayerData array from the parsed GVAS properties"
     for prop in gvas_properties:
@@ -45,7 +50,7 @@ def parse_fields_to_dict(fields: list) -> dict:
             else:
                 raise ValueError(f"Unknown value for {key}: {value}")
         elif key in ['Health', 'LastShotFireTime']:
-            value = float(value)
+            value = float(value.replace(',', ''))
         elif key in ['K', 'D', 'A']:
             value = int(value)
 
@@ -89,7 +94,7 @@ def convert_sav_to_json(sav_file_path: str, json_file_path: str) -> None:
         json_file.write(json_str)
 
 if __name__ == '__main__':
-    FILE_NAME = 'WaldoDataClient'
+    FILE_NAME = 'WaldoData_Server_2'
     SAVE_FILE = f'SavFiles/{FILE_NAME}.sav'
     WRITE_FILE = f'JsonFiles/{FILE_NAME}.json'
 
