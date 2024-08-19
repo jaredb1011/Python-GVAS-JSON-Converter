@@ -2,3 +2,5 @@ SavFiles/*.sav
 JsonFiles/*.json
 
 __pycache__/
+
+.vscode/settings.json
