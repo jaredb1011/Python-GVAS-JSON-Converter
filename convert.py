@@ -5,11 +5,9 @@ import json
 import sys
 from datetime import datetime
 from SavConverter.SavReader import read_sav
+from visualize import visualize_timeline
 
-# TODO:
-# - Mod should only record data from the player who got the kill
-# - Mod should output relative coords instead of absolute
-# - Mod should minify field names
+# TODO: Mod should output relative coords instead of absolute
 
 def get_player_data_array(gvas_properties: list) -> list | None:
     "Get the PlayerData array from the parsed GVAS properties"
@@ -57,8 +55,8 @@ def parse_fields_to_dict(fields: list) -> dict:
         field_dict[key] = value
     return field_dict
 
-def data_array_to_json(data_array: list) -> str:
-    "Connvert the data in the PlayerData array to json"
+def data_array_to_dict(data_array: list) -> dict:
+    "Convert the data in the PlayerData array to json"
     player_entries = []
     for msg in data_array:
         msg = msg.split("[WALDO]")[-1].strip()
@@ -72,30 +70,41 @@ def data_array_to_json(data_array: list) -> str:
     player_entries = sorted(player_entries, key=lambda x: x['Datetime'])
 
     # convert to json
-    out_json = {
+    out_dict = {
         "PlayerData": player_entries
     }
-    return json.dumps(out_json, indent=2)
+    return out_dict
 
-def convert_sav_to_json(sav_file_path: str, json_file_path: str) -> None:
+def convert_sav_to_dict(sav_file_path: str) -> dict:
     "Convert the given .sav file to a .json file"
     # Read sav file
     gvas_props: list = read_sav(sav_file_path)
 
-    # parse data into json
+    # parse data into dict
     player_data: list | None = get_player_data_array(gvas_props)
     if player_data is None:
         print('PlayerData array not found')
         sys.exit(1)
-    json_str: str = data_array_to_json(player_data)
+    data_dict: dict = data_array_to_dict(player_data)
 
+    return data_dict
+
+def output_json(data_dict: dict, json_file_path: str) -> None:
+    "Write the json data to the given file"
     # Write json string to file
+    json_str: str = json.dumps(data_dict, indent=2)
     with open(json_file_path, 'w', encoding='utf-8') as json_file:
         json_file.write(json_str)
 
 if __name__ == '__main__':
-    FILE_NAME = 'WaldoData_Server_2'
+    VISUALIZE_TIMELINE = True
+
+    FILE_NAME = 'WaldoData%AAS-TestMap%2,024_8_27-3_55'
     SAVE_FILE = f'SavFiles/{FILE_NAME}.sav'
     WRITE_FILE = f'JsonFiles/{FILE_NAME}.json'
 
-    convert_sav_to_json(SAVE_FILE, WRITE_FILE)
+    player_dict = convert_sav_to_dict(SAVE_FILE)
+    output_json(player_dict, WRITE_FILE)
+
+    if VISUALIZE_TIMELINE:
+        visualize_timeline(player_dict)
