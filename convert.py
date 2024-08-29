@@ -16,12 +16,16 @@ def get_player_data_array(gvas_properties: list) -> list | None:
             return prop.value
     return None
 
-def parse_fields_to_dict(fields: list) -> dict:
+def parse_fields_to_dict(fields: list) -> dict | None:
     "Parse the fields in the PlayerData array into a dict"
     field_dict = {}
     for field in fields:
         key = field.split(":")[0]
         value = ":".join(field.split(":")[1:]).strip()
+
+        if (key == 'PlayerName') and (value == ""):
+            # skip empty player entries
+            return None
 
         if key == 'Datetime':
             # fix weird timestamp & convert to datetime
@@ -29,7 +33,7 @@ def parse_fields_to_dict(fields: list) -> dict:
             value = datetime.strptime(value, '%Y/%m/%d %H:%M:%S.%f')
             value = value.strftime('%Y-%m-%d %H:%M:%S.%f')
 
-        elif key in ['Position', 'Rotation']:
+        elif key in ['DeltaPos', 'DeltaRot']:
             # convert to dict of x, y, z
             parts = value.replace(',', '').split(' ')
             value_dict = {}
@@ -64,6 +68,8 @@ def data_array_to_dict(data_array: list) -> dict:
         for player_msg in players:
             fields = player_msg.split("|")
             field_dict = parse_fields_to_dict(fields)
+            if field_dict is None:
+                continue
             player_entries.append(field_dict)
 
     # sort list by datetime
@@ -91,7 +97,6 @@ def convert_sav_to_dict(sav_file_path: str) -> dict:
 
 def output_json(data_dict: dict, json_file_path: str) -> None:
     "Write the json data to the given file"
-    # Write json string to file
     json_str: str = json.dumps(data_dict, indent=2)
     with open(json_file_path, 'w', encoding='utf-8') as json_file:
         json_file.write(json_str)
@@ -99,7 +104,7 @@ def output_json(data_dict: dict, json_file_path: str) -> None:
 if __name__ == '__main__':
     VISUALIZE_TIMELINE = True
 
-    FILE_NAME = 'WaldoData%AAS-TestMap%2,024_8_27-3_55'
+    FILE_NAME = 'WaldoData%AAS-TestMap%2,024_8_29-1_31'
     SAVE_FILE = f'SavFiles/{FILE_NAME}.sav'
     WRITE_FILE = f'JsonFiles/{FILE_NAME}.json'
 
