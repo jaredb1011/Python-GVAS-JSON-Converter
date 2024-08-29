@@ -7,8 +7,6 @@ from datetime import datetime
 from SavConverter.SavReader import read_sav
 from visualize import visualize_timeline
 
-# TODO: Mod should output relative coords instead of absolute
-
 def get_player_data_array(gvas_properties: list) -> list | None:
     "Get the PlayerData array from the parsed GVAS properties"
     for prop in gvas_properties:
