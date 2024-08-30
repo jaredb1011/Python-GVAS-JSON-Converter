@@ -3,6 +3,7 @@ Convert Operation Harsh Doorstop Waldo Mod UE4 GVAS (.sav) Savegame files to JSO
 '''
 import json
 import sys
+import os
 from datetime import datetime
 from SavConverter.SavReader import read_sav
 from visualize import visualize_timeline
@@ -102,12 +103,20 @@ def output_json(data_dict: dict, json_file_path: str) -> None:
 if __name__ == '__main__':
     VISUALIZE_TIMELINE = True
 
-    FILE_NAME = 'WaldoData%AAS-TestMap%2,024_8_29-1_31'
-    SAVE_FILE = f'SavFiles/{FILE_NAME}.sav'
-    WRITE_FILE = f'JsonFiles/{FILE_NAME}.json'
+    FILE_OR_DIR_NAME = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\repos\Python-GVAS-JSON-Converter\SavFiles"
 
-    player_dict = convert_sav_to_dict(SAVE_FILE)
-    output_json(player_dict, WRITE_FILE)
+    if os.path.isdir(FILE_OR_DIR_NAME):
+        file_objs = os.scandir(FILE_OR_DIR_NAME)
+        sav_files = [obj.path for obj in file_objs if obj.name.endswith('.sav')]
+    else:
+        sav_files = [FILE_OR_DIR_NAME]
 
-    if VISUALIZE_TIMELINE:
-        visualize_timeline(player_dict)
+    for sav_file in sav_files:
+        FILE_NAME = os.path.splitext(sav_file)[0]
+        WRITE_FILE = f'{FILE_NAME}.json'
+
+        player_dict = convert_sav_to_dict(sav_file)
+        output_json(player_dict, WRITE_FILE)
+
+        if VISUALIZE_TIMELINE:
+            visualize_timeline(player_dict)
