@@ -1,5 +1,6 @@
 SavFiles/*.sav
 JsonFiles/*.json
+CleanedJsonFiles/*.json
 
 __pycache__/
 

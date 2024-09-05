@@ -6,7 +6,7 @@ import sys
 import os
 from datetime import datetime
 from SavConverter.SavReader import read_sav
-from visualize import visualize_timeline
+from DataPrep.visualize_data import visualize_timeline
 
 def get_player_data_array(gvas_properties: list) -> list | None:
     "Get the PlayerData array from the parsed GVAS properties"
@@ -83,6 +83,7 @@ def data_array_to_dict(data_array: list) -> dict:
 def convert_sav_to_dict(sav_file_path: str) -> dict:
     "Convert the given .sav file to a .json file"
     # Read sav file
+    print(f'\nReading {sav_file_path}')
     gvas_props: list = read_sav(sav_file_path)
 
     # parse data into dict
@@ -99,11 +100,12 @@ def output_json(data_dict: dict, json_file_path: str) -> None:
     json_str: str = json.dumps(data_dict, indent=2)
     with open(json_file_path, 'w', encoding='utf-8') as json_file:
         json_file.write(json_str)
+    print(f'JSON data written to {json_file_path}')
 
 if __name__ == '__main__':
     VISUALIZE_TIMELINE = True
 
-    FILE_OR_DIR_NAME = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\repos\Python-GVAS-JSON-Converter\SavFiles"
+    FILE_OR_DIR_NAME = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\repos\Python-GVAS-JSON-Converter\SavFiles\WaldoData%Khafji_P%2,024_8_30-20_1.sav"
 
     if os.path.isdir(FILE_OR_DIR_NAME):
         file_objs = os.scandir(FILE_OR_DIR_NAME)
