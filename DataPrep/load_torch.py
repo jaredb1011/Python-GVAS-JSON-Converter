@@ -59,13 +59,16 @@ def create_dataloader(json_file, batch_size=32):
     print(f'Loaded {len(dataset)} entries from {json_file}')
     return DataLoader(dataset, batch_size=batch_size, collate_fn=collate_fn, shuffle=True)
 
-# Usage
-CLEANED_FOLDER = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\repos\Python-GVAS-JSON-Converter\CleanedJsonFiles"
-JSON_FILE = 'WaldoData%Argonne%2,024_8_29-2_6-killevents.json'
-json_path = os.path.join(CLEANED_FOLDER, JSON_FILE)
-dataloader = create_dataloader(json_path)
+if __name__ == '__main__':
+    # Paths to data
+    CLEANED_DATA_FOLDER = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\repos\Python-GVAS-JSON-Converter\CleanedJsonFiles"
+    JSON_FILE = 'WaldoData%Argonne%2,024_8_29-2_6-killevents.json'
 
-# Example of iterating through the dataloader
-for loaded_batch in dataloader:
-    print(loaded_batch.shape)  # Should be [batch_size, num_ticks, num_features]
-    # Your training loop here
+    # Create DataLoader
+    json_path = os.path.join(CLEANED_DATA_FOLDER, JSON_FILE)
+    dataloader = create_dataloader(json_path)
+
+    # Example of iterating through the dataloader
+    for loaded_batch in dataloader:
+        print(loaded_batch.shape)  # Should be [batch_size, num_ticks, num_features]
+        # Your training loop here
