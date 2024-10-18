@@ -61,8 +61,8 @@ def create_dataloader(json_file, batch_size=32):
 
 if __name__ == '__main__':
     # Paths to data
-    CLEANED_DATA_FOLDER = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\repos\Python-GVAS-JSON-Converter\CleanedJsonFiles"
-    JSON_FILE = 'WaldoData%Argonne%2,024_8_29-2_6-killevents.json'
+    CLEANED_DATA_FOLDER = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\Game_Servers\OHD\OHDSavesFromServer\Cleaned\WaldoData_OHD_Risala"
+    JSON_FILE = 'WaldoData%Risala%2,024_9_13-16_46-killevents.json'
 
     # Create DataLoader
     json_path = os.path.join(CLEANED_DATA_FOLDER, JSON_FILE)
