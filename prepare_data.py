@@ -72,14 +72,15 @@ def clean_data(json_files_path, cleaned_files_path):
 
 if __name__ == '__main__':
 
-    SAV_FILE_FOLDER     = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\Game_Servers\OHD\OHDSavesFromServer\Raw\WaldoData_OHD_Risala"
-    JSON_FILE_FOLDER    = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\Game_Servers\OHD\OHDSavesFromServer\Converted\WaldoData_OHD_Risala"
-    CLEANED_FILE_FOLDER = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\Game_Servers\OHD\OHDSavesFromServer\Cleaned\WaldoData_OHD_Risala"
+    BASE_DIR = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\Game_Servers\OHD\OHDSavesFromServer"
+    RAW_SAV_FILE_DIR        = os.path.join(BASE_DIR, "Raw", "WaldoData_OHD_Risala")
+    CONVERTED_JSON_FILE_DIR = os.path.join(BASE_DIR, "Converted", "WaldoData_OHD_Risala")
+    CLEANED_FILE_DIR        = os.path.join(BASE_DIR, "Cleaned", "WaldoData_OHD_Risala")
 
     VISUALIZE_TIMELINE = False
 
-    convert_errors = convert_savs(SAV_FILE_FOLDER, JSON_FILE_FOLDER, VISUALIZE_TIMELINE)
-    clean_errors   = clean_data(JSON_FILE_FOLDER, CLEANED_FILE_FOLDER)
+    convert_errors = convert_savs(RAW_SAV_FILE_DIR, CONVERTED_JSON_FILE_DIR, VISUALIZE_TIMELINE)
+    clean_errors   = clean_data(CONVERTED_JSON_FILE_DIR, CLEANED_FILE_DIR)
 
     if len(convert_errors) > 0:
         print('Errors converting .sav files:')

@@ -72,11 +72,11 @@ def visualize_timeline(json_data: dict) -> None:
 
 if __name__ == '__main__':
     # Load the JSON data
-    JSON_FOLDER = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\repos\Python-GVAS-JSON-Converter\JsonFiles"
-    JSON_FILENAME = "WaldoData%Argonne%2,024_8_29-2_6.json"
-    # filename = "WaldoData%AAS-TestMap%2,024_8_29-1_31.json"
-    # filename = "WaldoData%Khafji_P%2,024_8_30-20_1.json"
-    filepath = os.path.join(JSON_FOLDER, JSON_FILENAME)
+    BASE_DIR = r"C:\Users\jared\Desktop\basicallyhomeless\WALDO\Game_Servers\OHD\OHDSavesFromServer"
+    CONVERTED_JSON_FILE_DIR = os.path.join(BASE_DIR, "Converted", "WaldoData_OHD_Risala")
+    JSON_FILENAME = "WaldoData%Risala%2,024_9_13-16_46.json"
+
+    filepath = os.path.join(CONVERTED_JSON_FILE_DIR, JSON_FILENAME)
     with open(filepath, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
